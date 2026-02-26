@@ -1,0 +1,278 @@
+@import "tailwindcss";
+
+/* ═══════════════════════════════════════════════════════
+   Co-Lab  ·  Midnight Tech Design System
+   ═══════════════════════════════════════════════════════ */
+
+/* ─── Reset ──────────────────────────────────────────── */
+/* Only box-sizing here — margin/padding is handled by Tailwind preflight.
+   Writing margin:0 / padding:0 OUTSIDE an @layer would override ALL
+   Tailwind spacing utilities (pt-*, px-*, gap-*, etc.) due to CSS cascade
+   layers, so we deliberately leave those out. */
+*, *::before, *::after { box-sizing: border-box; }
+
+/* ─── Base ───────────────────────────────────────────── */
+html { font-size: 16px; }
+
+body {
+  background-color: #0f172a;
+  color: #e2e8f0;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+}
+
+/* ─── Scrollbar ──────────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: #0f172a; }
+::-webkit-scrollbar-thumb { background: #1e3a5f; border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: #38bdf8; }
+
+/* ─── Lenis ──────────────────────────────────────────── */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+.lenis.lenis-stopped { overflow: hidden; }
+.lenis.lenis-smooth iframe { pointer-events: none; }
+
+/* ─── Typography ─────────────────────────────────────── */
+.gradient-text {
+  background: linear-gradient(135deg, #38bdf8 0%, #818cf8 55%, #c084fc 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-text-warm {
+  background: linear-gradient(135deg, #f59e0b 0%, #ef4444 60%, #ec4899 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ─── Glow Effects ───────────────────────────────────── */
+.glow-sky    { box-shadow: 0 0 20px rgba(56,189,248,0.35), 0 0 60px rgba(56,189,248,0.10); }
+.glow-indigo { box-shadow: 0 0 20px rgba(129,140,248,0.35), 0 0 60px rgba(129,140,248,0.10); }
+.glow-purple { box-shadow: 0 0 20px rgba(192,132,252,0.35), 0 0 60px rgba(192,132,252,0.10); }
+.text-glow-sky { text-shadow: 0 0 24px rgba(56,189,248,0.65); }
+
+/* ─── Glass / Surface ────────────────────────────────── */
+.glass-card {
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(56,189,248,0.12);
+  transition: border-color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+}
+.glass-card:hover {
+  border-color: rgba(56,189,248,0.35);
+  background: rgba(30, 41, 59, 0.9);
+  box-shadow: 0 8px 40px rgba(56,189,248,0.08);
+}
+
+.glass-dark {
+  background: rgba(8, 15, 30, 0.75);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+/* ─── Gradient Borders ───────────────────────────────── */
+.gradient-border {
+  position: relative;
+}
+.gradient-border::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, #38bdf8, #818cf8, #c084fc);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* ─── Buttons ────────────────────────────────────────── */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.75rem;
+  border-radius: 0.875rem;
+  background: linear-gradient(135deg, #0ea5e9, #6366f1);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.9rem;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+  white-space: nowrap;
+}
+.btn-primary:hover {
+  transform: translateY(-1px) scale(1.02);
+  box-shadow: 0 0 28px rgba(56,189,248,0.45);
+}
+.btn-primary:active { transform: scale(0.97); }
+.btn-primary:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.75rem;
+  border-radius: 0.875rem;
+  background: transparent;
+  color: #cbd5e1;
+  font-weight: 600;
+  font-size: 0.9rem;
+  border: 1px solid rgba(100,116,139,0.5);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+.btn-ghost:hover {
+  border-color: rgba(56,189,248,0.5);
+  color: #38bdf8;
+  background: rgba(56,189,248,0.07);
+}
+
+/* ─── Inputs ─────────────────────────────────────────── */
+.input-field {
+  width: 100%;
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(51, 65, 85, 0.8);
+  color: #f1f5f9;
+  border-radius: 0.875rem;
+  padding: 0.8rem 1rem;
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  font-family: inherit;
+}
+.input-field::placeholder { color: #475569; }
+.input-field:focus {
+  border-color: #38bdf8;
+  box-shadow: 0 0 0 3px rgba(56,189,248,0.12);
+}
+
+/* ─── Animations ─────────────────────────────────────── */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-14px); }
+}
+.float-slow { animation: float 7s ease-in-out infinite; }
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.45; }
+  50%       { opacity: 1; }
+}
+.pulse-glow { animation: pulse-glow 2.2s ease-in-out infinite; }
+
+@keyframes border-glow {
+  0%, 100% { border-color: rgba(56,189,248,0.2); }
+  50%       { border-color: rgba(129,140,248,0.55); }
+}
+.animated-border { animation: border-glow 3s ease-in-out infinite; }
+
+@keyframes shimmer {
+  0%   { background-position: -1000px 0; }
+  100% { background-position: 1000px 0; }
+}
+.shimmer {
+  background: linear-gradient(90deg, rgba(30,41,59,0) 0%, rgba(56,189,248,0.08) 50%, rgba(30,41,59,0) 100%);
+  background-size: 1000px 100%;
+  animation: shimmer 2.2s infinite;
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+.spin-slow { animation: spin-slow 12s linear infinite; }
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-up { animation: fade-up 0.6s ease forwards; }
+
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.92); }
+  to   { opacity: 1; transform: scale(1); }
+}
+.scale-in { animation: scale-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+
+/* ─── Page Loader ────────────────────────────────────── */
+.loader-ring {
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  border: 3px solid rgba(56,189,248,0.15);
+  border-top-color: #38bdf8;
+  animation: spin-slow 0.9s linear infinite;
+}
+
+/* ─── Noise Texture ──────────────────────────────────── */
+.noise::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  border-radius: inherit;
+  opacity: 0.35;
+}
+
+/* ─── Skeleton Loader ────────────────────────────────── */
+.skeleton {
+  background: linear-gradient(90deg, #1e293b 25%, #263352 50%, #1e293b 75%);
+  background-size: 400% 100%;
+  animation: skeleton-wave 1.8s ease-in-out infinite;
+  border-radius: 0.5rem;
+}
+@keyframes skeleton-wave {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ─── Tag Pill ───────────────────────────────────────── */
+.skill-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 6px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  border: 1px solid rgba(56,189,248,0.25);
+  background: rgba(56,189,248,0.1);
+  color: #7dd3fc;
+  transition: all 0.15s ease;
+}
+.skill-tag.matched {
+  border-color: rgba(56,189,248,0.5);
+  background: rgba(56,189,248,0.18);
+  color: #38bdf8;
+}
+.skill-tag.unmatched {
+  border-color: rgba(51,65,85,0.8);
+  background: rgba(30,41,59,0.6);
+  color: #64748b;
+}
+
+/* ─── Score Ring colours ─────────────────────────────── */
+.score-excellent { stroke: #38bdf8; filter: drop-shadow(0 0 5px #38bdf8); }
+.score-good      { stroke: #818cf8; filter: drop-shadow(0 0 5px #818cf8); }
+.score-low       { stroke: #475569; }
+
+/* ─── Utility ────────────────────────────────────────── */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
