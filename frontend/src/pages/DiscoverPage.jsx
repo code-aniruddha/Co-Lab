@@ -8,9 +8,10 @@ import ProjectFeed from '../components/ProjectFeed';
 
 export default function DiscoverPage({ onNeedAuth, onPostProject }) {
   return (
-    <div className="min-h-screen bg-[#0a1628]">
+    <div className="min-h-screen">
       {/* Page header */}
-      <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-10 pt-10 pb-2">
+      <div className="section-glass-mid border-b border-slate-800/40">
+        <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-10 pt-10 pb-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -41,8 +42,7 @@ export default function DiscoverPage({ onNeedAuth, onPostProject }) {
             + Post a Project
           </motion.button>
         </motion.div>
-      </div>
-
+      </div>      </div>
       {/* Full feed */}
       <ProjectFeed onNeedAuth={onNeedAuth} hideHeader />
     </div>

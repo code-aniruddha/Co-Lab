@@ -4,7 +4,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Compass, Users, Rocket, LogIn, LogOut, ChevronDown } from 'lucide-react';
+import { Menu, X, Compass, Users, Rocket, LogIn, LogOut, ChevronDown, User, FolderOpen } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import Logo from './Logo';
 
@@ -119,6 +119,19 @@ export default function Navbar({ onPostProject, onOpenAuth }) {
                             <p className="text-slate-500 text-xs truncate">{user.email}</p>
                           </div>
                           <button
+                            onClick={() => { setUserMenu(false); navigate('/profile'); }}
+                            className="flex items-center gap-2.5 w-full px-3 py-2.5 rounded-xl text-slate-300 hover:bg-sky-500/10 hover:text-sky-300 transition-all text-sm font-medium"
+                          >
+                            <User size={14} /> My Profile
+                          </button>
+                          <button
+                            onClick={() => { setUserMenu(false); navigate('/profile'); }}
+                            className="flex items-center gap-2.5 w-full px-3 py-2.5 rounded-xl text-slate-300 hover:bg-sky-500/10 hover:text-sky-300 transition-all text-sm font-medium"
+                          >
+                            <FolderOpen size={14} /> My Projects
+                          </button>
+                          <div className="my-1 border-t border-slate-800" />
+                          <button
                             onClick={() => { signOut(); setUserMenu(false); }}
                             className="flex items-center gap-2.5 w-full px-3 py-2.5 rounded-xl text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-all text-sm font-medium"
                           >
@@ -185,6 +198,12 @@ export default function Navbar({ onPostProject, onOpenAuth }) {
             <div className="pt-2 border-t border-slate-800 space-y-2">
               {user ? (
                 <>
+                  <button
+                    onClick={() => { setMenuOpen(false); navigate('/profile'); }}
+                    className="flex items-center gap-2.5 text-slate-300 hover:text-sky-400 transition-colors w-full text-left py-3 px-3 rounded-xl hover:bg-sky-500/8 text-sm"
+                  >
+                    <User size={15} /> My Profile &amp; Projects
+                  </button>
                   <button
                     onClick={() => { setMenuOpen(false); onPostProject(); }}
                     className="btn-primary w-full justify-center py-3 text-sm"

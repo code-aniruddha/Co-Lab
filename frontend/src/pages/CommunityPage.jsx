@@ -165,10 +165,10 @@ function TeamCard({ team, index }) {
 
 export default function CommunityPage() {
   return (
-    <div className="min-h-screen bg-[#0a1628]">
+    <div className="min-h-screen">
 
       {/* ── Hero banner ── */}
-      <section className="py-16 bg-[#080f1e] border-b border-slate-800/60">
+      <section className="py-16 section-glass border-b border-slate-800/40">
         <div className="max-w-5xl mx-auto px-5 sm:px-8 text-center">
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
@@ -200,7 +200,7 @@ export default function CommunityPage() {
       </section>
 
       {/* ── Stats row ── */}
-      <section className="py-10 bg-[#080f1e]">
+      <section className="py-10 section-glass">
         <div className="max-w-5xl mx-auto px-5 sm:px-8">
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-5">
             {[
@@ -226,7 +226,7 @@ export default function CommunityPage() {
       </section>
 
       {/* ── Featured builders ── */}
-      <section className="py-16 bg-[#0a1628]">
+      <section className="py-16 section-glass-mid">
         <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-10">
           <div className="mb-10">
             <p className="text-indigo-400 text-xs font-bold uppercase tracking-widest mb-2">Top Contributing Students</p>
@@ -241,7 +241,7 @@ export default function CommunityPage() {
       </section>
 
       {/* ── Hackathon Teams ── */}
-      <section className="py-16 bg-[#080f1e]">
+      <section className="py-16 section-glass-mid">
         <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-10">
           <div className="mb-10 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
             <div>
@@ -262,7 +262,7 @@ export default function CommunityPage() {
       </section>
 
       {/* ── Resources ── */}
-      <section className="py-16 bg-[#080f1e]">
+      <section className="py-16 section-glass">
         <div className="max-w-5xl mx-auto px-5 sm:px-8">
           <div className="mb-10">
             <p className="text-sky-400 text-xs font-bold uppercase tracking-widest mb-2">Learning Hub</p>
@@ -293,7 +293,7 @@ export default function CommunityPage() {
       </section>
 
       {/* ── Join CTA ── */}
-      <section className="py-20 bg-[#0a1628]">
+      <section className="py-20 section-glass-mid">
         <div className="max-w-3xl mx-auto px-5 sm:px-8 text-center">
           <motion.div
             initial={{ opacity: 0, y: 24 }}

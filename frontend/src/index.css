@@ -65,23 +65,27 @@ html.lenis, html.lenis body { height: auto; }
 
 /* ─── Glass / Surface ────────────────────────────────── */
 .glass-card {
-  background: rgba(15, 23, 42, 0.85);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: rgba(15, 23, 42, 0.72);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   border: 1px solid rgba(56,189,248,0.12);
   transition: border-color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+  animation: grass-sway 6s ease-in-out infinite, grass-glow-pulse 8s ease-in-out infinite;
+  animation-delay: calc(var(--sway-delay, 0) * 1s);
+  will-change: transform;
 }
 .glass-card:hover {
   border-color: rgba(56,189,248,0.35);
-  background: rgba(30, 41, 59, 0.9);
-  box-shadow: 0 8px 40px rgba(56,189,248,0.08);
+  background: rgba(30, 41, 59, 0.88);
+  box-shadow: 0 8px 40px rgba(56,189,248,0.1), 0 0 24px rgba(56,189,248,0.07);
+  animation-play-state: paused;
 }
 
 .glass-dark {
-  background: rgba(8, 15, 30, 0.75);
+  background: rgba(8, 15, 30, 0.80);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.07);
 }
 
 /* ─── Gradient Borders ───────────────────────────────── */
@@ -273,6 +277,57 @@ html.lenis, html.lenis body { height: auto; }
 .score-good      { stroke: #818cf8; filter: drop-shadow(0 0 5px #818cf8); }
 .score-low       { stroke: #475569; }
 
-/* ─── Utility ────────────────────────────────────────── */
-.no-scrollbar::-webkit-scrollbar { display: none; }
-.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+/* ─── Grass Morph — global element sway animation ───── */
+@keyframes grass-sway {
+  0%   { transform: skewX(0deg)    translateY(0px)    rotate(0deg); }
+  20%  { transform: skewX(0.6deg)  translateY(-1px)   rotate(0.15deg); }
+  40%  { transform: skewX(-0.4deg) translateY(0.5px)  rotate(-0.1deg); }
+  60%  { transform: skewX(0.5deg)  translateY(-0.5px) rotate(0.12deg); }
+  80%  { transform: skewX(-0.3deg) translateY(0.8px)  rotate(-0.08deg); }
+  100% { transform: skewX(0deg)    translateY(0px)    rotate(0deg); }
+}
+
+@keyframes grass-glow-pulse {
+  0%, 100% { box-shadow: 0 0 0 rgba(56,189,248,0); border-color: rgba(56,189,248,0.12); }
+  50%       { box-shadow: 0 0 18px rgba(56,189,248,0.07); border-color: rgba(56,189,248,0.22); }
+}
+
+@keyframes leaf-float {
+  0%   { transform: translateY(0px)   rotate(0deg); }
+  33%  { transform: translateY(-3px)  rotate(0.3deg); }
+  66%  { transform: translateY(2px)   rotate(-0.2deg); }
+  100% { transform: translateY(0px)   rotate(0deg); }
+}
+
+/* Apply grass sway automatically to every interactive card */
+/* (animation merged directly into .glass-card above) */
+
+/* Stagger the sway phase per card using nth-child */
+.glass-card:nth-child(2n)   { --sway-delay: 0.8;  animation-duration: 6.8s,  9s;  }
+.glass-card:nth-child(3n)   { --sway-delay: 1.6;  animation-duration: 5.5s,  7s;  }
+.glass-card:nth-child(4n)   { --sway-delay: 2.4;  animation-duration: 7.2s,  10s; }
+.glass-card:nth-child(5n)   { --sway-delay: 0.3;  animation-duration: 6.1s,  8.5s; }
+
+/* Pause sway on hover for a "held" feel */
+/* (merged into .glass-card:hover above) */
+
+/* Leaf float — attach to stat numbers, badges, section headers */
+.leaf-float { animation: leaf-float 4.5s ease-in-out infinite; }
+.leaf-float-lg { animation: leaf-float 5.5s ease-in-out infinite 0.5s; }
+
+/* Section bg — semi-transparent so 3D shines through */
+.section-glass {
+  background: rgba(8, 15, 30, 0.52);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+.section-glass-mid {
+  background: rgba(10, 22, 40, 0.44);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+}
+.section-glass-light {
+  background: rgba(15, 23, 42, 0.38);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+}

@@ -46,6 +46,21 @@ function ScoreRing({ score }) {
   );
 }
 
+// ─── localStorage interest helpers ──────────────────────
+export function saveInterest(projectId, applicant) {
+  try {
+    const key  = `colab_interests_${projectId}`;
+    const prev = JSON.parse(localStorage.getItem(key) || '[]');
+    if (prev.some(a => a.email === applicant.email)) return;
+    prev.unshift({ ...applicant, timestamp: Date.now() });
+    localStorage.setItem(key, JSON.stringify(prev));
+  } catch (_) {}
+}
+export function loadInterests(projectId) {
+  try { return JSON.parse(localStorage.getItem(`colab_interests_${projectId}`) || '[]'); }
+  catch { return []; }
+}
+
 // ─── Interest Button ──────────────────────────────────────
 function InterestButton({ projectId, initialCount, onSuccess, onNeedAuth }) {
   const { user } = useAuth();
@@ -57,17 +72,24 @@ function InterestButton({ projectId, initialCount, onSuccess, onNeedAuth }) {
     if (clicked) return;
     if (!user) { onNeedAuth?.(); return; }
     setLoading(true);
+    const applicant = {
+      name:   user.user_metadata?.full_name || user.email?.split('@')[0] || 'Student',
+      email:  user.email || '',
+      skills: user.skills || user.user_metadata?.skills || USER_PROFILE.skills,
+      role:   user.user_metadata?.role || user.role || '',
+    };
     try {
       await supabase.from('applications').insert([{
         project_id:       projectId,
-        applicant_name:   user.user_metadata?.full_name || user.email || 'Student',
-        applicant_skills: USER_PROFILE.skills,
+        applicant_name:   applicant.name,
+        applicant_skills: applicant.skills,
         message: 'Interested in collaborating!',
       }]);
       await supabase.from('projects')
         .update({ interest_count: count + 1 })
         .eq('id', projectId);
-    } catch (_) { /* offline / demo — update locally */ }
+    } catch (_) { /* offline / demo */ }
+    saveInterest(projectId, applicant);
     setCount(c => c + 1);
     setClicked(true);
     setLoading(false);
@@ -117,11 +139,10 @@ function ProjectCard({ project, userSkills, index, onInterestSuccess, onNeedAuth
 
   return (
     <motion.div
-      layout
-      initial={{ opacity: 0, y: 24 }}
+      initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0  }}
-      exit={{   opacity: 0, scale: 0.95 }}
-      transition={{ delay: index * 0.07, duration: 0.4 }}
+      exit={{   opacity: 0 }}
+      transition={{ delay: Math.min(index * 0.04, 0.25), duration: 0.25 }}
       className={`glass-card rounded-2xl p-5 flex flex-col gap-4 relative overflow-hidden transition-all duration-300 ${
         isMatch ? 'ring-1 ring-sky-500/30 shadow-lg shadow-sky-500/10' : ''
       } ${filled ? 'opacity-70' : ''}`}
@@ -284,7 +305,7 @@ export default function ProjectFeed({ onNeedAuth, hideHeader = false }) {
   const DOMAINS = ['All', 'Startup', 'Hackathon', 'Research'];
 
   return (
-    <section id="projects" className="py-10 bg-[#0a1628]">
+    <section id="projects" className="py-10 section-glass">
       <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-10">
 
       {/* Section Header — hidden when used inside DiscoverPage */}
@@ -322,13 +343,7 @@ export default function ProjectFeed({ onNeedAuth, hideHeader = false }) {
       )}
 
       {/* Filter Bar */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.5, delay: 0.1 }}
-        className="space-y-3 mb-8"
-      >
+      <div className="space-y-3 mb-8">
         {/* Search */}
         <div className="relative">
           <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" />
@@ -370,7 +385,7 @@ export default function ProjectFeed({ onNeedAuth, hideHeader = false }) {
             Smart Match
           </button>
         </div>
-      </motion.div>
+      </div>
 
       {/* Results count */}
       <div className="flex items-center justify-between mb-5">
@@ -417,12 +432,9 @@ export default function ProjectFeed({ onNeedAuth, hideHeader = false }) {
 
       {/* Project Grid */}
       {!loading && (
-        <AnimatePresence mode="popLayout">
+        <AnimatePresence mode="sync">
           {filtered.length > 0 ? (
-            <motion.div
-              layout
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"
-            >
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
               {filtered.map((project, i) => (
                 <ProjectCard
                   key={project.id}
@@ -433,7 +445,7 @@ export default function ProjectFeed({ onNeedAuth, hideHeader = false }) {
                   onNeedAuth={onNeedAuth}
                 />
               ))}
-            </motion.div>
+            </div>
           ) : (
             <motion.div
               initial={{ opacity: 0 }}

@@ -1,157 +1,41 @@
-﻿// ============================================================
-//  src/components/Hero.jsx
-//  3-D particle network + interactive orbit
 // ============================================================
-import { useRef, useMemo, useCallback, useState } from 'react';
-import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { Points, PointMaterial } from '@react-three/drei';
+//  src/components/Hero.jsx
+//  Hero content only � the 3-D canvas lives in Background3D.jsx
+//  which is rendered fixed behind the whole app in App.jsx
+// ============================================================
+import { useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowDown, Sparkles, Users, Globe, Zap, Network, Rocket } from 'lucide-react';
-import * as THREE from 'three';
 
-// â”€â”€â”€ Interactive Particle Network â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-function ParticleNetwork({ count = 2000 }) {
-  const meshRef = useRef();
-  const linesRef = useRef();
-  const mouseRef = useRef({ x: 0, y: 0 });
-  const t = useRef(0);
-
-  // Track mouse in 3-D space
-  useThree(({ gl }) => {
-    const canvas = gl.domElement;
-    const onMove = (e) => {
-      mouseRef.current.x = (e.clientX / canvas.offsetWidth  - 0.5) * 2;
-      mouseRef.current.y = (e.clientY / canvas.offsetHeight - 0.5) * 2;
-    };
-    canvas.addEventListener('mousemove', onMove, { passive: true });
-    return () => canvas.removeEventListener('mousemove', onMove);
-  });
-
-  const positions = useMemo(() => {
-    const pos = new Float32Array(count * 3);
-    for (let i = 0; i < count; i++) {
-      const theta = Math.random() * Math.PI * 2;
-      const phi   = Math.acos(2 * Math.random() - 1);
-      const r     = 2.2 + Math.random() * 2.4;
-      pos[i * 3]     = r * Math.sin(phi) * Math.cos(theta);
-      pos[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
-      pos[i * 3 + 2] = r * Math.cos(phi);
-    }
-    return pos;
-  }, [count]);
-
-  const linePositions = useMemo(() => {
-    const pts = [];
-    const n = 140;
-    for (let i = 0; i < n; i++) {
-      for (let j = i + 1; j < n; j++) {
-        const ix = i * 3, jx = j * 3;
-        const dx = positions[ix] - positions[jx];
-        const dy = positions[ix+1] - positions[jx+1];
-        const dz = positions[ix+2] - positions[jx+2];
-        if (dx*dx + dy*dy + dz*dz < 2.8) {
-          pts.push(positions[ix], positions[ix+1], positions[ix+2],
-                   positions[jx], positions[jx+1], positions[jx+2]);
-        }
-      }
-    }
-    return new Float32Array(pts);
-  }, [positions]);
-
-  useFrame((_, delta) => {
-    t.current += delta * 0.15;
-    const mx = mouseRef.current.x * 0.35;
-    const my = mouseRef.current.y * 0.25;
-    if (meshRef.current) {
-      meshRef.current.rotation.y = t.current * 0.38 + mx;
-      meshRef.current.rotation.x = Math.sin(t.current * 0.28) * 0.22 - my;
-    }
-    if (linesRef.current) {
-      linesRef.current.rotation.y = t.current * 0.38 + mx;
-      linesRef.current.rotation.x = Math.sin(t.current * 0.28) * 0.22 - my;
-    }
-  });
-
-  return (
-    <>
-      <lineSegments ref={linesRef}>
-        <bufferGeometry>
-          <bufferAttribute attach="attributes-position" args={[linePositions, 3]} />
-        </bufferGeometry>
-        <lineBasicMaterial color="#38bdf8" transparent opacity={0.11} linewidth={1} />
-      </lineSegments>
-
-      <Points ref={meshRef} positions={positions} stride={3} frustumCulled={false}>
-        <PointMaterial transparent color="#7dd3fc" size={0.036} sizeAttenuation depthWrite={false} opacity={0.7} />
-      </Points>
-
-      <Points positions={positions.slice(0, 120)} stride={3} frustumCulled={false}>
-        <PointMaterial transparent color="#818cf8" size={0.065} sizeAttenuation depthWrite={false} opacity={0.88} />
-      </Points>
-    </>
-  );
-}
-
-// â”€â”€â”€ Torus rings â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-function Rings() {
-  const r1 = useRef(), r2 = useRef();
-  useFrame((_, d) => {
-    if (r1.current) { r1.current.rotation.z += d * 0.1; r1.current.rotation.x += d * 0.04; }
-    if (r2.current) { r2.current.rotation.z -= d * 0.07; r2.current.rotation.y += d * 0.05; }
-  });
-  return (
-    <>
-      <mesh ref={r1} rotation={[Math.PI / 3, 0, 0]}>
-        <torusGeometry args={[3.8, 0.011, 16, 130]} />
-        <meshBasicMaterial color="#818cf8" transparent opacity={0.22} />
-      </mesh>
-      <mesh ref={r2} rotation={[Math.PI / 5, Math.PI / 6, 0]}>
-        <torusGeometry args={[4.4, 0.007, 16, 130]} />
-        <meshBasicMaterial color="#38bdf8" transparent opacity={0.14} />
-      </mesh>
-    </>
-  );
-}
-
-// â”€â”€â”€ Stats â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const STATS = [
-  { value: '200+', label: 'Projects', icon: Network  },
-  { value: '1.2k', label: 'Students', icon: Users    },
-  { value: '48',   label: 'Colleges', icon: Globe    },
-  { value: '94%',  label: 'Match Rate', icon: Zap    },
+  { value: '200+', label: 'Projects',   icon: Network },
+  { value: '1.2k', label: 'Students',   icon: Users   },
+  { value: '48',   label: 'Colleges',   icon: Globe   },
+  { value: '94%',  label: 'Match Rate', icon: Zap     },
 ];
 
-// â”€â”€â”€ Hero â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export default function Hero({ onPostProject, onDiscover }) {
-  const [hovered3D, setHovered3D] = useState(false);
-
   const scrollDown = useCallback(() => {
     document.querySelector('#projects')?.scrollIntoView({ behavior: 'smooth' });
   }, []);
 
   return (
-    <section id="hero" className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden bg-[#0a1628]">
-
-      {/* 3-D canvas */}
+    <section
+      id="hero"
+      className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden"
+      style={{ background: 'transparent' }}
+    >
+      {/* Radial vignette so text stays readable against the global BG */}
       <div
-        className="absolute inset-0 z-0 cursor-grab active:cursor-grabbing"
-        onMouseEnter={() => setHovered3D(true)}
-        onMouseLeave={() => setHovered3D(false)}
-      >
-        <Canvas camera={{ position: [0, 0, 7.5], fov: 58 }} gl={{ antialias: true, alpha: true }}>
-          <ambientLight intensity={0.6} />
-          <ParticleNetwork />
-          <Rings />
-        </Canvas>
-      </div>
-
-      {/* Vignette */}
-      <div className="absolute inset-0 z-10 pointer-events-none" style={{
-        background: 'radial-gradient(ellipse 75% 65% at 50% 50%, transparent 0%, #0a1628 72%)',
-      }} />
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: 'radial-gradient(ellipse 80% 70% at 50% 50%, transparent 0%, rgba(8,15,30,0.72) 70%)',
+          zIndex: 1,
+        }}
+      />
 
       {/* Content */}
-      <div className="relative z-20 text-center px-5 sm:px-6 max-w-5xl mx-auto pt-28">
+      <div className="relative text-center px-5 sm:px-6 max-w-5xl mx-auto pt-28" style={{ zIndex: 2 }}>
 
         {/* Badge */}
         <motion.div
@@ -187,7 +71,7 @@ export default function Hero({ onPostProject, onDiscover }) {
         >
           Co-Lab connects visionary student builders with the talent they need.
           Post your idea, discover projects that match your skills, and ship
-          something meaningful â€” together.
+          something meaningful � together.
         </motion.p>
 
         {/* CTAs */}
@@ -248,7 +132,8 @@ export default function Hero({ onPostProject, onDiscover }) {
         animate={{ opacity: 1 }}
         transition={{ delay: 1.3 }}
         whileHover={{ scale: 1.1 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-1.5 text-slate-500 hover:text-sky-400 transition-colors group"
+        style={{ zIndex: 2 }}
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1.5 text-slate-500 hover:text-sky-400 transition-colors group"
       >
         <span className="text-[10px] tracking-widest uppercase font-medium">Discover</span>
         <motion.div

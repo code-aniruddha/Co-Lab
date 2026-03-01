@@ -102,7 +102,7 @@ export default function HomePage({ onPostProject, onNeedAuth }) {
       </div>
 
       {/* ── Stats section ── */}
-      <section className="py-16 bg-[#080f1e] border-y border-slate-800/60">
+      <section className="py-16 section-glass border-y border-slate-800/40">
         <div className="max-w-5xl mx-auto px-5 sm:px-8">
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
             {STATS.map(({ value, label, icon: Icon }, i) => (
@@ -126,7 +126,7 @@ export default function HomePage({ onPostProject, onNeedAuth }) {
       </section>
 
       {/* ── Featured projects ── */}
-      <section id="featured" className="py-20 bg-[#0a1628]">
+      <section id="featured" className="py-20 section-glass-mid">
         <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-10">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10">
             <div>
@@ -189,7 +189,7 @@ export default function HomePage({ onPostProject, onNeedAuth }) {
       </section>
 
       {/* ── How it works ── */}
-      <section id="how-it-works" className="py-20 bg-[#080f1e]">
+      <section id="how-it-works" className="py-20 section-glass">
         <div className="max-w-5xl mx-auto px-5 sm:px-8">
           <div className="text-center mb-14">
             <motion.p

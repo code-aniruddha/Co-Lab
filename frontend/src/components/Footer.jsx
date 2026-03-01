@@ -24,7 +24,7 @@ const LINKS = {
 export default function Footer() {
   const navigate = useNavigate();
   return (
-    <footer id="about" className="border-t border-slate-800/80 bg-[#070e1c] pt-16 pb-8 px-5">
+    <footer id="about" className="border-t border-slate-800/60 section-glass pt-16 pb-8 px-5">
       <div className="max-w-6xl mx-auto">
 
         {/* Top row */}
@@ -90,7 +90,7 @@ export default function Footer() {
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-slate-600 text-xs">© 2026 Co-Lab · Open Source · Built for students, by students</p>
           <p className="text-slate-600 text-xs flex items-center gap-1.5">
-            Made with <Heart size={11} className="text-red-500 fill-red-500" /> in React
+            Made in React
           </p>
         </div>
       </div>

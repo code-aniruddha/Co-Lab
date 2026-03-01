@@ -7,6 +7,7 @@ import { AnimatePresence } from 'framer-motion';
 import Lenis from 'lenis';
 
 import { AuthProvider, useAuth } from './context/AuthContext';
+import Background3D     from './components/Background3D';
 import Navbar          from './components/Navbar';
 import Footer          from './components/Footer';
 import PostProjectForm from './components/PostProjectForm';
@@ -16,6 +17,7 @@ import PageLoader      from './components/PageLoader';
 import HomePage      from './pages/HomePage';
 import DiscoverPage  from './pages/DiscoverPage';
 import CommunityPage from './pages/CommunityPage';
+import ProfilePage   from './pages/ProfilePage';
 
 // ─── Scroll-to-top on route change ───────────────────────
 function ScrollToTop() {
@@ -65,12 +67,15 @@ function AppInner() {
 
   return (
     <>
+      {/* Fixed 3-D background — behind everything, all pages */}
+      <Background3D />
+
       {/* Boot loader */}
       <AnimatePresence>
         {!loaded && <PageLoader key="loader" onDone={() => setLoaded(true)} />}
       </AnimatePresence>
 
-      <div className="min-h-screen bg-[#0a1628] text-slate-100">
+      <div className="min-h-screen text-slate-100" style={{ position: 'relative', zIndex: 1 }}>
         <ScrollToTop />
 
         <Navbar onPostProject={openPostForm} onOpenAuth={openAuth} />
@@ -98,6 +103,15 @@ function AppInner() {
               }
             />
             <Route path="/community" element={<CommunityPage />} />
+            <Route
+              path="/profile"
+              element={
+                <ProfilePage
+                  onOpenAuth={openAuth}
+                  onPostProject={openPostForm}
+                />
+              }
+            />
             <Route path="*" element={<HomePage onPostProject={openPostForm} onNeedAuth={openAuth} />} />
           </Routes>
         </main>
