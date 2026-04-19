@@ -1,17 +1,16 @@
 // ============================================================
-//  src/components/PageLoader.jsx  —  Full-screen boot animation
+//  src/components/PageLoader.jsx (White Canvas Edition)
 // ============================================================
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import Logo from './Logo';
 
 export default function PageLoader({ onDone }) {
-  const [phase, setPhase] = useState(0); // 0 = logo in, 1 = text, 2 = exit
+  const [phase, setPhase] = useState(0);
 
   useEffect(() => {
-    const t1 = setTimeout(() => setPhase(1), 600);
-    const t2 = setTimeout(() => setPhase(2), 1900);
-    const t3 = setTimeout(() => onDone?.(), 2500);
+    const t1 = setTimeout(() => setPhase(1), 400);
+    const t2 = setTimeout(() => setPhase(2), 1600);
+    const t3 = setTimeout(() => onDone?.(), 2200);
     return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
   }, [onDone]);
 
@@ -21,65 +20,73 @@ export default function PageLoader({ onDone }) {
         <motion.div
           key="loader"
           initial={{ opacity: 1 }}
-          exit={{ opacity: 0, scale: 1.04 }}
-          transition={{ duration: 0.55, ease: [0.4, 0, 0.2, 1] }}
-          className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#0a1628]"
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.4, ease: [0.76, 0, 0.24, 1] }}
+          className="fixed inset-0 z-[100] flex flex-col items-center justify-center"
+          style={{ backgroundColor: 'var(--canvas)' }}
         >
-          {/* Background radial */}
-          <div
-            className="absolute inset-0 pointer-events-none"
-            style={{
-              background: 'radial-gradient(ellipse 60% 50% at 50% 50%, rgba(56,189,248,0.07) 0%, transparent 70%)',
-            }}
-          />
+          <div className="flex flex-col items-center">
+            {/* Brutalist Spinner / Block */}
+            <motion.div
+              initial={{ scaleX: 0 }}
+              animate={{ scaleX: 1 }}
+              transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
+              style={{
+                width: '120px',
+                height: '24px',
+                backgroundColor: 'var(--ink)',
+                transformOrigin: 'left',
+                marginBottom: '1rem'
+              }}
+            />
 
-          {/* Orbital ring */}
-          <svg
-            className="absolute w-72 h-72 spin-slow opacity-20"
-            viewBox="0 0 200 200"
-            fill="none"
-          >
-            <circle cx="100" cy="100" r="90" stroke="url(#orb)" strokeWidth="0.8" strokeDasharray="6 3" />
-            <defs>
-              <linearGradient id="orb" x1="0" y1="0" x2="200" y2="200" gradientUnits="userSpaceOnUse">
-                <stop stopColor="#38bdf8" />
-                <stop offset="1" stopColor="#818cf8" />
-              </linearGradient>
-            </defs>
-          </svg>
-
-          {/* Logo mark */}
-          <motion.div
-            initial={{ scale: 0.6, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ type: 'spring', stiffness: 280, damping: 22 }}
-          >
-            <Logo size={64} showText={false} />
-          </motion.div>
-
-          {/* Wordmark */}
-          <AnimatePresence>
-            {phase >= 1 && (
-              <motion.div
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4 }}
-                className="mt-5 text-center"
-              >
-                <p className="text-3xl font-extrabold gradient-text tracking-tight">Co-Lab</p>
-                <p className="text-slate-500 text-sm mt-1.5 tracking-widest uppercase text-xs">
-                  Student Collaboration Hub
-                </p>
-              </motion.div>
-            )}
-          </AnimatePresence>
+            {/* Wordmark */}
+            <AnimatePresence>
+              {phase >= 1 && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="text-center"
+                >
+                  <p style={{
+                    fontFamily: 'var(--font-display)',
+                    fontWeight: 800,
+                    fontSize: '2rem',
+                    color: 'var(--ink)',
+                    textTransform: 'uppercase',
+                    letterSpacing: '-0.02em',
+                    lineHeight: 1
+                  }}>
+                    Co-Lab
+                  </p>
+                  <p style={{
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: '0.6875rem',
+                    color: 'var(--ink-muted)',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.2em',
+                    marginTop: '0.5rem'
+                  }}>
+                    System Boot
+                  </p>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
 
           {/* Progress bar */}
           <motion.div
-            className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-sky-500 via-indigo-500 to-purple-500"
             initial={{ width: '0%' }}
             animate={{ width: '100%' }}
-            transition={{ duration: 1.8, ease: 'easeInOut' }}
+            transition={{ duration: 1.5, ease: 'linear' }}
+            style={{
+              position: 'absolute',
+              bottom: 0,
+              left: 0,
+              height: '4px',
+              backgroundColor: 'var(--ink)'
+            }}
           />
         </motion.div>
       )}

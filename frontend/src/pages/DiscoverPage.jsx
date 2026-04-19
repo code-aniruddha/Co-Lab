@@ -1,48 +1,69 @@
 // ============================================================
-//  src/pages/DiscoverPage.jsx  —  Full project discovery
+//  src/pages/DiscoverPage.jsx (White Canvas Edition)
 // ============================================================
-import { useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Compass } from 'lucide-react';
 import ProjectFeed from '../components/ProjectFeed';
+import { variants, viewportConfig } from '../lib/motion';
 
 export default function DiscoverPage({ onNeedAuth, onPostProject }) {
   return (
-    <div className="min-h-screen">
+    <div style={{ '--section-accent': 'var(--accent-blue)', minHeight: '100vh', backgroundColor: 'var(--canvas)' }}>
       {/* Page header */}
-      <div className="section-glass-mid border-b border-slate-800/40">
-        <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-10 pt-10 pb-6">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
-        >
-          <div>
-            <div className="flex items-center gap-2 text-sky-400 text-xs font-bold uppercase tracking-widest mb-2">
-              <Compass size={13} /> Discover
-            </div>
-            <h1 className="text-3xl sm:text-4xl font-extrabold text-white">
-              Find Your Next{' '}
-              <span className="gradient-text">Collaboration</span>
-            </h1>
-            <p className="text-slate-400 text-sm mt-2 max-w-xl">
-              Browse active projects. Skills highlighted in{' '}
-              <span className="text-sky-400 font-semibold">blue</span> match your profile. The{' '}
-              <span className="text-sky-400 font-semibold">Smart Match</span> badge shows your best-fit projects.
-            </p>
-          </div>
-
-          <motion.button
-            whileHover={{ scale: 1.04, boxShadow: '0 0 22px rgba(56,189,248,0.4)' }}
-            whileTap={{ scale: 0.96 }}
-            onClick={onPostProject}
-            className="btn-primary px-6 py-3 text-sm shrink-0 self-start sm:self-center"
+      <div style={{ borderBottom: '2px solid var(--ink)', backgroundColor: 'var(--canvas-warm)' }}>
+        <div className="max-w-[1340px] mx-auto px-5 sm:px-8 pt-12 pb-10">
+          <motion.div
+            initial="hidden"
+            animate="show"
+            variants={variants.staggerFast}
+            className="flex flex-col sm:flex-row sm:items-end justify-between gap-6"
           >
-            + Post a Project
-          </motion.button>
-        </motion.div>
-      </div>      </div>
+            <div>
+              <motion.div variants={variants.fadeIn} className="flex items-center gap-2 mb-4" style={{
+                fontFamily: 'var(--font-mono)', fontSize: '0.6875rem', textTransform: 'uppercase', letterSpacing: '0.3em', color: 'var(--section-accent)'
+              }}>
+                <Compass size={14} /> Discover
+              </motion.div>
+              
+              <h1 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 'clamp(3rem, 5vw, 6rem)', color: 'var(--ink)', lineHeight: 0.9, letterSpacing: '-0.03em', margin: 0 }}>
+                <div className="overflow-hidden block">
+                  <motion.div variants={variants.clipReveal}>Find Your Next</motion.div>
+                </div>
+                <div className="overflow-hidden block">
+                  <motion.div variants={variants.clipReveal}><span className="accent-highlight">Collaboration</span></motion.div>
+                </div>
+              </h1>
+              
+              <motion.p variants={variants.fadeUp} style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8125rem', color: 'var(--ink-muted)', marginTop: '1.5rem', maxWidth: '600px', lineHeight: 1.85 }}>
+                Browse active projects. Skills highlighted in <span style={{ color: 'var(--ink)', fontWeight: 700 }}>black</span> match your profile. 
+                The <span style={{ color: 'var(--section-accent)', fontWeight: 700 }}>Smart Match</span> badge shows your best-fit projects.
+              </motion.p>
+            </div>
+
+            <motion.button
+              variants={variants.fadeUp}
+              onClick={onPostProject}
+              className="brutal-hover"
+              style={{
+                backgroundColor: 'var(--section-accent)',
+                color: 'var(--canvas)',
+                border: 'none',
+                padding: '1rem 2rem',
+                fontFamily: 'var(--font-mono)',
+                fontWeight: 700,
+                fontSize: '0.75rem',
+                textTransform: 'uppercase',
+                letterSpacing: '0.18em',
+                cursor: 'pointer',
+                flexShrink: 0
+              }}
+            >
+              Post a Project
+            </motion.button>
+          </motion.div>
+        </div>
+      </div>
+
       {/* Full feed */}
       <ProjectFeed onNeedAuth={onNeedAuth} hideHeader />
     </div>

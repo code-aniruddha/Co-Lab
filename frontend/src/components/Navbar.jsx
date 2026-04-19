@@ -1,22 +1,20 @@
-﻿// ============================================================
-//  src/components/Navbar.jsx
+// ============================================================
+//  src/components/Navbar.jsx (White Canvas Edition)
 // ============================================================
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Compass, Users, Rocket, LogIn, LogOut, ChevronDown, User, FolderOpen } from 'lucide-react';
+import { Menu, X, Rocket, LogIn, LogOut, User, FolderOpen, ArrowRight } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import Logo from './Logo';
 
 const NAV_LINKS = [
-  { label: 'Discover',   to: '/discover',   icon: Compass },
-  { label: 'Community',  to: '/community',  icon: Users   },
+  { label: 'Discover',   to: '/discover' },
+  { label: 'Community',  to: '/community' },
 ];
 
 export default function Navbar({ onPostProject, onOpenAuth }) {
   const [scrolled,  setScrolled] = useState(false);
   const [menuOpen,  setMenuOpen] = useState(false);
-  const [userMenu,  setUserMenu] = useState(false);
   const { user, signOut } = useAuth();
   const navigate  = useNavigate();
   const location  = useLocation();
@@ -27,8 +25,7 @@ export default function Navbar({ onPostProject, onOpenAuth }) {
     return () => window.removeEventListener('scroll', fn);
   }, []);
 
-  // Close menus on route change
-  useEffect(() => { setMenuOpen(false); setUserMenu(false); }, [location.pathname]);
+  useEffect(() => { setMenuOpen(false); }, [location.pathname]);
 
   const go = (to) => { setMenuOpen(false); navigate(to); };
 
@@ -39,190 +36,247 @@ export default function Navbar({ onPostProject, onOpenAuth }) {
   return (
     <>
       <motion.nav
-        initial={{ y: -80, opacity: 0 }}
-        animate={{ y: 0,   opacity: 1 }}
-        transition={{ duration: 0.55, ease: 'easeOut' }}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          scrolled
-            ? 'bg-[#080f1e]/92 backdrop-blur-xl border-b border-sky-500/15 shadow-xl shadow-black/30'
-            : 'bg-transparent'
-        }`}
+        initial={{ y: -56 }}
+        animate={{ y: 0 }}
+        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
+        className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
+        style={{
+          height: '56px',
+          backgroundColor: 'var(--canvas)',
+          borderBottom: scrolled ? '2px solid var(--ink)' : '2px solid transparent',
+          boxShadow: scrolled && window.scrollY < 100 ? '0 2px 0 var(--rule)' : 'none'
+        }}
       >
-        <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-10">
-          <div className="flex items-center justify-between h-[64px]">
+        <div className="h-full px-5 sm:px-8 lg:px-10 flex items-center justify-between">
 
-            {/* Logo â†’ home */}
-            <motion.div whileHover={{ scale: 1.03 }} className="cursor-pointer" onClick={() => go('/')}>
-              <Logo size={32} showText />
-            </motion.div>
+          {/* Logo */}
+          <div 
+            className="cursor-pointer flex items-baseline"
+            onClick={() => go('/')}
+          >
+            <span style={{
+              fontFamily: 'var(--font-display)',
+              fontWeight: 800,
+              fontSize: '0.9375rem',
+              color: 'var(--ink)',
+              letterSpacing: '-0.03em',
+              textTransform: 'uppercase'
+            }}>
+              Co-Lab
+            </span>
+            <div style={{ width: '4px', height: '4px', backgroundColor: 'var(--section-accent)', marginLeft: '4px' }} />
+          </div>
 
-            {/* Desktop links */}
-            <div className="hidden md:flex items-center gap-1">
-              {NAV_LINKS.map(({ label, to, icon: Icon }) => {
-                const active = location.pathname === to;
-                return (
-                  <button
-                    key={label}
-                    onClick={() => go(to)}
-                    className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium transition-all ${
-                      active
-                        ? 'text-sky-400 bg-sky-500/10'
-                        : 'text-slate-400 hover:text-sky-400 hover:bg-sky-500/8'
-                    }`}
-                  >
-                    <Icon size={13} />{label}
-                  </button>
-                );
-              })}
-            </div>
+          {/* Desktop links */}
+          <div className="hidden md:flex items-center" style={{ gap: '2.5rem' }}>
+            {NAV_LINKS.map(({ label, to }) => {
+              const active = location.pathname === to;
+              return (
+                <button
+                  key={label}
+                  onClick={() => go(to)}
+                  className={`relative cursor-pointer transition-colors ${active ? '' : 'hover-underline'}`}
+                  style={{
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: '0.6875rem',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.2em',
+                    color: active ? 'var(--ink)' : 'var(--ink-muted)',
+                    borderBottom: active ? '2px solid var(--section-accent)' : 'none',
+                    paddingBottom: active ? '2px' : '0'
+                  }}
+                >
+                  {label}
+                </button>
+              );
+            })}
+          </div>
 
-            {/* Right controls */}
-            <div className="flex items-center gap-2.5">
-              {user ? (
-                <>
-                  <motion.button
-                    whileHover={{ scale: 1.04, boxShadow: '0 0 22px rgba(56,189,248,0.45)' }}
-                    whileTap={{ scale: 0.96 }}
-                    onClick={onPostProject}
-                    className="hidden sm:flex btn-primary py-2 px-4 text-sm"
-                  >
-                    <Rocket size={13} /> Post Project
-                  </motion.button>
+          {/* Right controls */}
+          <div className="flex items-center gap-4">
+            {user ? (
+              <>
+                <button
+                  onClick={onPostProject}
+                  className="hidden sm:flex brutal-hover"
+                  style={{
+                    backgroundColor: 'var(--ink)',
+                    color: 'var(--canvas)',
+                    padding: '0.5rem 1.25rem',
+                    fontFamily: 'var(--font-mono)',
+                    fontWeight: 700,
+                    fontSize: '0.6875rem',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.15em',
+                    border: 'none',
+                    transition: 'background-color 0.2s, color 0.2s'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = 'var(--section-accent)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = 'var(--ink)';
+                  }}
+                >
+                  Post Project
+                </button>
 
-                  {/* Avatar dropdown */}
-                  <div className="relative">
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      onClick={() => setUserMenu(v => !v)}
-                      className="flex items-center gap-2 pl-1 pr-2 py-1 rounded-xl border border-slate-700/60 hover:border-sky-500/40 bg-slate-800/50 transition-all"
-                    >
-                      <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-sky-400 to-indigo-500 flex items-center justify-center text-xs font-bold text-white">
-                        {initials}
-                      </div>
-                      <ChevronDown size={12} className={`text-slate-400 transition-transform ${userMenu ? 'rotate-180' : ''}`} />
-                    </motion.button>
+                {/* Profile Link instead of dropdown */}
+                <button
+                  onClick={() => navigate('/profile')}
+                  className="hidden sm:flex brutal-hover items-center justify-center"
+                  style={{
+                    width: '32px',
+                    height: '32px',
+                    backgroundColor: 'var(--canvas)',
+                    border: '1.5px solid var(--ink)',
+                    color: 'var(--ink)',
+                    fontFamily: 'var(--font-display)',
+                    fontWeight: 800,
+                    fontSize: '0.75rem',
+                  }}
+                >
+                  {initials}
+                </button>
+              </>
+            ) : (
+              <>
+                <button
+                  onClick={onOpenAuth}
+                  className="hidden sm:flex hover-underline cursor-pointer"
+                  style={{
+                    backgroundColor: 'transparent',
+                    border: 'none',
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: '0.6875rem',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.2em',
+                    color: 'var(--ink-muted)'
+                  }}
+                >
+                  Log In
+                </button>
+                <button
+                  onClick={onOpenAuth}
+                  className="hidden sm:flex brutal-hover"
+                  style={{
+                    backgroundColor: 'var(--ink)',
+                    color: 'var(--canvas)',
+                    padding: '0.5rem 1.25rem',
+                    fontFamily: 'var(--font-mono)',
+                    fontWeight: 700,
+                    fontSize: '0.6875rem',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.15em',
+                    border: 'none',
+                    transition: 'background-color 0.2s, color 0.2s'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = 'var(--section-accent)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = 'var(--ink)';
+                  }}
+                >
+                  Get Started
+                </button>
+              </>
+            )}
 
-                    <AnimatePresence>
-                      {userMenu && (
-                        <motion.div
-                          initial={{ opacity: 0, scale: 0.95, y: -6 }}
-                          animate={{ opacity: 1, scale: 1,    y: 0  }}
-                          exit={{   opacity: 0, scale: 0.95, y: -6  }}
-                          transition={{ duration: 0.15 }}
-                          className="absolute right-0 top-full mt-2 w-52 glass-dark rounded-2xl border border-slate-700/60 p-1.5 shadow-xl"
-                        >
-                          <div className="px-3 py-2.5 border-b border-slate-700/50 mb-1">
-                            <p className="text-white text-sm font-semibold truncate">
-                              {user.user_metadata?.full_name || 'Student'}
-                            </p>
-                            <p className="text-slate-500 text-xs truncate">{user.email}</p>
-                          </div>
-                          <button
-                            onClick={() => { setUserMenu(false); navigate('/profile'); }}
-                            className="flex items-center gap-2.5 w-full px-3 py-2.5 rounded-xl text-slate-300 hover:bg-sky-500/10 hover:text-sky-300 transition-all text-sm font-medium"
-                          >
-                            <User size={14} /> My Profile
-                          </button>
-                          <button
-                            onClick={() => { setUserMenu(false); navigate('/profile'); }}
-                            className="flex items-center gap-2.5 w-full px-3 py-2.5 rounded-xl text-slate-300 hover:bg-sky-500/10 hover:text-sky-300 transition-all text-sm font-medium"
-                          >
-                            <FolderOpen size={14} /> My Projects
-                          </button>
-                          <div className="my-1 border-t border-slate-800" />
-                          <button
-                            onClick={() => { signOut(); setUserMenu(false); }}
-                            className="flex items-center gap-2.5 w-full px-3 py-2.5 rounded-xl text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-all text-sm font-medium"
-                          >
-                            <LogOut size={14} /> Sign Out
-                          </button>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <motion.button
-                    whileHover={{ scale: 1.03 }}
-                    whileTap={{ scale: 0.97 }}
-                    onClick={onOpenAuth}
-                    className="hidden sm:flex btn-ghost py-2 px-4 text-sm"
-                  >
-                    <LogIn size={13} /> Log In
-                  </motion.button>
-                  <motion.button
-                    whileHover={{ scale: 1.04, boxShadow: '0 0 22px rgba(56,189,248,0.4)' }}
-                    whileTap={{ scale: 0.96 }}
-                    onClick={onOpenAuth}
-                    className="hidden sm:flex btn-primary py-2 px-4 text-sm"
-                  >
-                    Get Started
-                  </motion.button>
-                </>
-              )}
-
-              {/* Hamburger */}
-              <motion.button
-                whileTap={{ scale: 0.9 }}
-                className="md:hidden w-9 h-9 rounded-xl border border-slate-700/60 flex items-center justify-center text-slate-400 hover:text-white hover:border-sky-500/40 transition-all"
-                onClick={() => setMenuOpen(v => !v)}
-              >
-                {menuOpen ? <X size={17} /> : <Menu size={17} />}
-              </motion.button>
-            </div>
+            {/* Hamburger */}
+            <button
+              className="md:hidden flex items-center justify-center w-8 h-8"
+              onClick={() => setMenuOpen(v => !v)}
+              style={{ border: 'none', background: 'none', color: 'var(--ink)' }}
+            >
+              {menuOpen ? <X size={24} strokeWidth={2} /> : <Menu size={24} strokeWidth={2} />}
+            </button>
           </div>
         </div>
       </motion.nav>
 
-      {/* Mobile menu */}
+      {/* Mobile menu takeover */}
       <AnimatePresence>
         {menuOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0  }}
-            exit={{   opacity: 0, y: -8  }}
-            transition={{ duration: 0.2 }}
-            className="fixed top-[64px] left-0 right-0 z-40 bg-[#080f1e]/96 backdrop-blur-xl border-b border-sky-500/15 px-5 py-4 space-y-1"
+            initial={{ x: '100%' }}
+            animate={{ x: 0 }}
+            exit={{ x: '100%' }}
+            transition={{ duration: 0.4, ease: [0.76, 0, 0.24, 1] }}
+            className="fixed inset-0 z-40 flex flex-col"
+            style={{
+              backgroundColor: 'var(--canvas)',
+              borderLeft: '2px solid var(--ink)',
+              paddingTop: '80px', // below navbar
+              paddingLeft: '2rem',
+              paddingRight: '2rem'
+            }}
           >
-            {NAV_LINKS.map(({ label, to, icon: Icon }) => (
-              <button
-                key={label}
-                onClick={() => go(to)}
-                className="flex items-center gap-2.5 text-slate-300 hover:text-sky-400 transition-colors w-full text-left py-3 px-3 rounded-xl hover:bg-sky-500/8 text-sm"
-              >
-                <Icon size={15} />{label}
-              </button>
-            ))}
-            <div className="pt-2 border-t border-slate-800 space-y-2">
+            <div className="flex flex-col gap-6 mt-8">
+              {NAV_LINKS.map(({ label, to }, i) => (
+                <motion.button
+                  key={label}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 + i * 0.1 }}
+                  onClick={() => go(to)}
+                  className="text-left"
+                  style={{
+                    fontFamily: 'var(--font-display)',
+                    fontWeight: 800,
+                    fontSize: '3rem',
+                    color: 'var(--ink)',
+                    textTransform: 'uppercase',
+                    letterSpacing: '-0.02em',
+                    lineHeight: 1
+                  }}
+                >
+                  {label}
+                </motion.button>
+              ))}
+            </div>
+
+            <div className="mt-auto mb-10 border-t-2 pt-6" style={{ borderColor: 'var(--ink)' }}>
               {user ? (
-                <>
+                <div className="flex flex-col gap-4">
                   <button
                     onClick={() => { setMenuOpen(false); navigate('/profile'); }}
-                    className="flex items-center gap-2.5 text-slate-300 hover:text-sky-400 transition-colors w-full text-left py-3 px-3 rounded-xl hover:bg-sky-500/8 text-sm"
+                    className="text-left hover-underline"
+                    style={{ fontFamily: 'var(--font-mono)', fontSize: '1rem', textTransform: 'uppercase', color: 'var(--ink)' }}
                   >
-                    <User size={15} /> My Profile &amp; Projects
+                    My Profile
                   </button>
                   <button
                     onClick={() => { setMenuOpen(false); onPostProject(); }}
-                    className="btn-primary w-full justify-center py-3 text-sm"
+                    className="text-left hover-underline"
+                    style={{ fontFamily: 'var(--font-mono)', fontSize: '1rem', textTransform: 'uppercase', color: 'var(--section-accent)' }}
                   >
-                    <Rocket size={14} /> Post a Project
+                    Post a Project
                   </button>
                   <button
                     onClick={() => { signOut(); setMenuOpen(false); }}
-                    className="w-full justify-center py-3 text-sm text-red-400 flex items-center gap-2 rounded-xl border border-red-500/30 hover:bg-red-500/10 transition-all"
+                    className="text-left hover-underline mt-4"
+                    style={{ fontFamily: 'var(--font-mono)', fontSize: '1rem', textTransform: 'uppercase', color: 'var(--ink-muted)' }}
                   >
-                    <LogOut size={14} /> Sign Out
+                    Sign Out
                   </button>
-                </>
+                </div>
               ) : (
                 <button
                   onClick={() => { setMenuOpen(false); onOpenAuth(); }}
-                  className="btn-primary w-full justify-center py-3 text-sm"
+                  className="w-full text-left flex items-center justify-between brutal-hover"
+                  style={{
+                    backgroundColor: 'var(--ink)',
+                    color: 'var(--canvas)',
+                    padding: '1rem',
+                    fontFamily: 'var(--font-mono)',
+                    fontWeight: 700,
+                    fontSize: '1rem',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.15em',
+                  }}
                 >
-                  <LogIn size={14} /> Log In / Sign Up
+                  Log In / Sign Up <ArrowRight size={20} />
                 </button>
               )}
             </div>

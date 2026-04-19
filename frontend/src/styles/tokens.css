@@ -1,0 +1,55 @@
+/* ═══════════════════════════════════════════════════════
+   Co-Lab  ·  White Canvas Brutalism Tokens
+   ═══════════════════════════════════════════════════════ */
+
+:root {
+  /* ─── Canvas & Ink ─── */
+  --canvas: #fafaf8;
+  --canvas-warm: #f5f3ee;
+  --canvas-section: #f0ede6;
+  
+  --ink: #0f0f0d;
+  --ink-muted: #5a5a56;
+  --ink-faint: #9a9993;
+  --ink-disabled: #c8c7c0;
+  
+  --rule: #d4d3cc;
+  --rule-strong: #0f0f0d;
+
+  /* ─── Accents ─── */
+  --accent-red: #e8272a;
+  --accent-red-dark: #b81e20;
+  --accent-red-light: #fde8e8;
+
+  --accent-blue: #1a35d4;
+  --accent-blue-dark: #1228a0;
+  --accent-blue-light: #e8ecfc;
+
+  --accent-amber: #e8820c;
+  --accent-amber-dark: #b86008;
+  --accent-amber-light: #fef3e2;
+
+  --accent-green: #0d7a3e;
+  --accent-green-dark: #095c2e;
+  --accent-green-light: #e4f5ec;
+
+  --accent-violet: #6d24d4;
+  --accent-violet-dark: #531ba0;
+  --accent-violet-light: #f0e8fc;
+
+  --accent-black: #0f0f0d;
+
+  /* Default section accent if none provided */
+  --section-accent: var(--accent-red);
+
+  /* ─── Typography ─── */
+  --font-display: 'Syne', sans-serif;
+  --font-body: 'Space Mono', monospace;
+  --font-editorial: 'DM Serif Display', serif;
+
+  /* ─── Layout ─── */
+  --section-padding-y: clamp(5rem, 10vw, 10rem);
+  --content-max-w: 1340px;
+  --reading-max-w: 680px;
+  --gutter: clamp(1rem, 3vw, 2.5rem);
+}

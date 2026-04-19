@@ -1,149 +1,179 @@
 // ============================================================
-//  src/components/Hero.jsx
-//  Hero content only � the 3-D canvas lives in Background3D.jsx
-//  which is rendered fixed behind the whole app in App.jsx
+//  src/components/Hero.jsx (White Canvas Edition)
 // ============================================================
-import { useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowDown, Sparkles, Users, Globe, Zap, Network, Rocket } from 'lucide-react';
-
-const STATS = [
-  { value: '200+', label: 'Projects',   icon: Network },
-  { value: '1.2k', label: 'Students',   icon: Users   },
-  { value: '48',   label: 'Colleges',   icon: Globe   },
-  { value: '94%',  label: 'Match Rate', icon: Zap     },
-];
+import { useParallax } from '../hooks/useParallax';
+import { variants } from '../lib/motion';
 
 export default function Hero({ onPostProject, onDiscover }) {
-  const scrollDown = useCallback(() => {
-    document.querySelector('#projects')?.scrollIntoView({ behavior: 'smooth' });
-  }, []);
+  const headingParallax = useParallax(0.25);
+  const subParallax = useParallax(0.45);
+  const indexParallax = useParallax(0.12);
 
   return (
     <section
       id="hero"
-      className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden"
-      style={{ background: 'transparent' }}
+      className="relative min-h-[100svh] flex flex-col justify-center"
+      style={{ 
+        backgroundColor: 'var(--canvas)',
+        '--section-accent': 'var(--accent-red)'
+      }}
     >
-      {/* Radial vignette so text stays readable against the global BG */}
-      <div
-        className="absolute inset-0 pointer-events-none"
+      {/* Background Index Number */}
+      <motion.div
+        className="absolute bottom-0 right-0 pointer-events-none select-none"
         style={{
-          background: 'radial-gradient(ellipse 80% 70% at 50% 50%, transparent 0%, rgba(8,15,30,0.72) 70%)',
-          zIndex: 1,
+          fontFamily: 'var(--font-display)',
+          fontWeight: 800,
+          fontSize: '30vw',
+          color: 'var(--section-accent)',
+          opacity: 0.05,
+          lineHeight: 0.75,
+          y: indexParallax
         }}
-      />
+      >
+        01
+      </motion.div>
 
-      {/* Content */}
-      <div className="relative text-center px-5 sm:px-6 max-w-5xl mx-auto pt-28" style={{ zIndex: 2 }}>
-
-        {/* Badge */}
+      <div className="relative px-5 sm:px-8 max-w-[1340px] mx-auto w-full" style={{ zIndex: 2 }}>
+        
+        {/* Top Label */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.85 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.2, duration: 0.5, type: 'spring' }}
-          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-sky-500/25 bg-sky-500/8 text-sky-400 text-[11px] font-bold uppercase tracking-widest mb-7 animated-border"
+          variants={variants.fadeIn}
+          initial="hidden"
+          animate="show"
+          className="mb-8"
         >
-          <Sparkles size={11} className="pulse-glow" />
-          Open Innovation Network
+          <span style={{
+            fontFamily: 'var(--font-mono)',
+            fontSize: '0.6875rem',
+            textTransform: 'uppercase',
+            letterSpacing: '0.25em',
+            color: 'var(--ink-muted)',
+            borderLeft: '3px solid var(--section-accent)',
+            paddingLeft: '0.75rem'
+          }}>
+            Creative Studio 2024
+          </span>
         </motion.div>
 
-        {/* Headline */}
-        <motion.h1
-          initial={{ opacity: 0, y: 32 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.35, duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
-          className="text-5xl sm:text-6xl lg:text-7xl font-extrabold leading-[1.08] tracking-tight mb-6"
-        >
-          <span className="text-white">Where Great</span>
-          <br />
-          <span className="gradient-text text-glow-sky">Ideas Find</span>
-          <br />
-          <span className="text-white">Their Team.</span>
-        </motion.h1>
+        {/* Heading */}
+        <motion.div style={{ y: headingParallax }} className="mb-10">
+          <h1 style={{
+            fontFamily: 'var(--font-display)',
+            fontWeight: 800,
+            fontSize: 'clamp(5rem, 12vw, 13rem)',
+            color: 'var(--ink)',
+            lineHeight: 0.88,
+            letterSpacing: '-0.04em',
+            margin: 0
+          }}>
+            <div className="overflow-hidden block">
+              <motion.div variants={variants.clipReveal} initial="hidden" animate="show">
+                Where Great
+              </motion.div>
+            </div>
+            <div className="overflow-hidden block">
+              <motion.div variants={variants.clipReveal} initial="hidden" animate="show" transition={{ delay: 0.12 }}>
+                <span className="accent-highlight">Ideas Find</span>
+              </motion.div>
+            </div>
+            <div className="overflow-hidden block">
+              <motion.div variants={variants.clipReveal} initial="hidden" animate="show" transition={{ delay: 0.24 }}>
+                Their Team.
+              </motion.div>
+            </div>
+          </h1>
+        </motion.div>
 
-        {/* Subtitle */}
+        {/* Subheading */}
         <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5, duration: 0.6 }}
-          className="text-slate-400 text-lg sm:text-xl max-w-2xl mx-auto leading-relaxed mb-10"
+          style={{ y: subParallax }}
+          variants={variants.fadeUp}
+          initial="hidden"
+          animate="show"
+          className="max-w-[680px] mb-12"
         >
-          Co-Lab connects visionary student builders with the talent they need.
-          Post your idea, discover projects that match your skills, and ship
-          something meaningful � together.
+          <span style={{
+            fontFamily: 'var(--font-editorial)',
+            fontStyle: 'italic',
+            fontSize: 'clamp(1.25rem, 2.5vw, 2rem)',
+            color: 'var(--ink-muted)',
+            lineHeight: 1.3
+          }}>
+            Co-Lab connects visionary student builders with the talent they need. 
+            Post your idea, discover projects that match your skills, and ship something meaningful.
+          </span>
         </motion.p>
 
         {/* CTAs */}
         <motion.div
-          initial={{ opacity: 0, y: 18 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.65, duration: 0.5 }}
-          className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16"
+          variants={variants.fadeUp}
+          initial="hidden"
+          animate="show"
+          className="flex flex-col sm:flex-row items-start gap-6"
         >
-          <motion.button
-            whileHover={{ scale: 1.05, boxShadow: '0 0 35px rgba(56,189,248,0.55)' }}
-            whileTap={{ scale: 0.95 }}
+          <button
             onClick={onPostProject}
-            className="btn-primary px-9 py-4 text-base w-full sm:w-auto"
+            className="brutal-hover"
+            style={{
+              backgroundColor: 'var(--section-accent)',
+              color: 'var(--canvas)',
+              border: 'none',
+              padding: '1rem 2.5rem',
+              fontFamily: 'var(--font-mono)',
+              fontWeight: 700,
+              fontSize: '0.75rem',
+              textTransform: 'uppercase',
+              letterSpacing: '0.18em',
+              cursor: 'pointer'
+            }}
           >
-            <Rocket size={16} /> Post Your Project
-          </motion.button>
-          <motion.button
-            whileHover={{ scale: 1.04, borderColor: 'rgba(56,189,248,0.6)' }}
-            whileTap={{ scale: 0.96 }}
+            Post Your Project
+          </button>
+          
+          <button
             onClick={onDiscover}
-            className="btn-ghost px-9 py-4 text-base w-full sm:w-auto"
+            style={{
+              backgroundColor: 'transparent',
+              color: 'var(--ink)',
+              border: '2px solid var(--ink)',
+              padding: '1rem 2.5rem',
+              fontFamily: 'var(--font-mono)',
+              fontWeight: 700,
+              fontSize: '0.75rem',
+              textTransform: 'uppercase',
+              letterSpacing: '0.18em',
+              cursor: 'pointer',
+              transition: 'all 0.15s ease'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = 'var(--ink)';
+              e.currentTarget.style.color = 'var(--canvas)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = 'transparent';
+              e.currentTarget.style.color = 'var(--ink)';
+            }}
           >
             Explore Projects
-          </motion.button>
-        </motion.div>
-
-        {/* Stats */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.8, duration: 0.6 }}
-          className="flex flex-wrap justify-center gap-8 mb-20"
-        >
-          {STATS.map(({ value, label, icon: Icon }, i) => (
-            <motion.div
-              key={label}
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.88 + i * 0.1 }}
-              whileHover={{ scale: 1.08 }}
-              className="text-center cursor-default"
-            >
-              <div className="flex items-center justify-center gap-1.5 mb-0.5">
-                <Icon size={13} className="text-sky-400" />
-                <span className="text-2xl font-extrabold text-white">{value}</span>
-              </div>
-              <p className="text-slate-500 text-[11px] uppercase tracking-widest">{label}</p>
-            </motion.div>
-          ))}
+          </button>
         </motion.div>
       </div>
 
-      {/* Scroll Indicator */}
-      <motion.button
-        onClick={scrollDown}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.3 }}
-        whileHover={{ scale: 1.1 }}
-        style={{ zIndex: 2 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1.5 text-slate-500 hover:text-sky-400 transition-colors group"
-      >
-        <span className="text-[10px] tracking-widest uppercase font-medium">Discover</span>
-        <motion.div
-          animate={{ y: [0, 7, 0] }}
-          transition={{ repeat: Infinity, duration: 1.5, ease: 'easeInOut' }}
-          className="w-8 h-8 rounded-full border border-slate-700/70 flex items-center justify-center group-hover:border-sky-500/50 transition-colors"
-        >
-          <ArrowDown size={14} />
-        </motion.div>
-      </motion.button>
+      {/* Horizontal Rule Below Hero */}
+      <motion.div
+        variants={variants.drawBorder}
+        initial="hidden"
+        animate="show"
+        style={{
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          width: '100%',
+          borderBottom: '3px solid var(--ink)'
+        }}
+      />
     </section>
   );
 }

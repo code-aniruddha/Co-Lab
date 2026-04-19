@@ -1,18 +1,19 @@
 // ============================================================
-//  src/App.jsx  —  Co-Lab root with React Router
+//  src/App.jsx  —  Co-Lab root with React Router (White Canvas)
 // ============================================================
 import { useState, useEffect, useCallback } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
-import { AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion, useScroll } from 'framer-motion';
 import Lenis from 'lenis';
 
 import { AuthProvider, useAuth } from './context/AuthContext';
-import Background3D     from './components/Background3D';
 import Navbar          from './components/Navbar';
 import Footer          from './components/Footer';
 import PostProjectForm from './components/PostProjectForm';
 import AuthModal       from './components/AuthModal';
 import PageLoader      from './components/PageLoader';
+import { PageWipe }    from './components/PageWipe';
+import { CustomCursor } from './hooks/useCustomCursor';
 
 import HomePage      from './pages/HomePage';
 import DiscoverPage  from './pages/DiscoverPage';
@@ -29,6 +30,17 @@ function ScrollToTop() {
   return null;
 }
 
+// ─── Scroll Progress Bar ─────────────────────────────────
+function ScrollProgress() {
+  const { scrollYProgress } = useScroll();
+  return (
+    <motion.div
+      className="scroll-progress"
+      style={{ scaleX: scrollYProgress }}
+    />
+  );
+}
+
 // ─── Inner app (needs auth context + router) ─────────────
 function AppInner() {
   const { user, loginDemo } = useAuth();
@@ -36,14 +48,15 @@ function AppInner() {
   const [showAuth,  setShowAuth]  = useState(false);
   const [feedKey,   setFeedKey]   = useState(0);
   const [loaded,    setLoaded]    = useState(false);
+  const location = useLocation();
 
   // Lenis smooth scroll
   useEffect(() => {
     const lenis = new Lenis({
-      duration: 1.3,
-      easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      orientation: 'vertical',
+      duration: 1.1,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
+      touchMultiplier: 1.8,
     });
     let rafId;
     const raf = (time) => { lenis.raf(time); rafId = requestAnimationFrame(raf); };
@@ -61,64 +74,68 @@ function AppInner() {
   const openAuth  = useCallback(() => setShowAuth(true),  []);
   const closeAuth = useCallback(() => setShowAuth(false), []);
   const onSuccess = useCallback((userObj) => {
-    if (userObj) loginDemo(userObj); // demo / offline user
+    if (userObj) loginDemo(userObj);
     setFeedKey(k => k + 1);
   }, [loginDemo]);
 
   return (
     <>
-      {/* Fixed 3-D background — behind everything, all pages */}
-      <Background3D />
-
-      {/* Boot loader */}
-      <AnimatePresence>
+      <CustomCursor />
+      <ScrollProgress />
+      
+      <AnimatePresence mode="wait">
         {!loaded && <PageLoader key="loader" onDone={() => setLoaded(true)} />}
       </AnimatePresence>
 
-      <div className="min-h-screen text-slate-100" style={{ position: 'relative', zIndex: 1 }}>
+      <div className="min-h-screen relative z-[1]">
         <ScrollToTop />
-
         <Navbar onPostProject={openPostForm} onOpenAuth={openAuth} />
 
-        {/* pt-16 = 64px — clears the fixed navbar for all non-hero pages */}
-        <main style={{ paddingTop: '4rem' }}>
-          <Routes>
-            <Route
-              path="/"
-              element={
-                <HomePage
-                  onPostProject={openPostForm}
-                  onNeedAuth={openAuth}
-                />
-              }
-            />
-            <Route
-              path="/discover"
-              element={
-                <DiscoverPage
-                  key={feedKey}
-                  onNeedAuth={openAuth}
-                  onPostProject={openPostForm}
-                />
-              }
-            />
-            <Route path="/community" element={<CommunityPage />} />
-            <Route
-              path="/profile"
-              element={
-                <ProfilePage
-                  onOpenAuth={openAuth}
-                  onPostProject={openPostForm}
-                />
-              }
-            />
-            <Route path="*" element={<HomePage onPostProject={openPostForm} onNeedAuth={openAuth} />} />
-          </Routes>
+        {/* pt-14 = 56px navbar height */}
+        <main style={{ paddingTop: '56px' }}>
+          <AnimatePresence mode="wait" initial={false}>
+            <Routes location={location} key={location.pathname}>
+              <Route
+                path="/"
+                element={
+                  <>
+                    <PageWipe />
+                    <HomePage onPostProject={openPostForm} onNeedAuth={openAuth} />
+                  </>
+                }
+              />
+              <Route
+                path="/discover"
+                element={
+                  <>
+                    <PageWipe />
+                    <DiscoverPage key={feedKey} onNeedAuth={openAuth} onPostProject={openPostForm} />
+                  </>
+                }
+              />
+              <Route 
+                path="/community" 
+                element={<><PageWipe /><CommunityPage /></>} 
+              />
+              <Route
+                path="/profile"
+                element={
+                  <>
+                    <PageWipe />
+                    <ProfilePage onOpenAuth={openAuth} onPostProject={openPostForm} />
+                  </>
+                }
+              />
+              <Route 
+                path="*" 
+                element={<><PageWipe /><HomePage onPostProject={openPostForm} onNeedAuth={openAuth} /></>} 
+              />
+            </Routes>
+          </AnimatePresence>
         </main>
 
         <Footer />
 
-        {/* Post Project Modal */}
         <AnimatePresence>
           {showForm && (
             <PostProjectForm
@@ -129,7 +146,6 @@ function AppInner() {
           )}
         </AnimatePresence>
 
-        {/* Auth Modal */}
         <AnimatePresence>
           {showAuth && (
             <AuthModal
